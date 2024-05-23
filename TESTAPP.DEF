@@ -1,0 +1,10 @@
+NAME testapp WINDOWAPI
+
+DESCRIPTION 'Testcase to demonstrate usage of color sample control'
+
+DATA   MULTIPLE
+
+HEAPSIZE  32768
+STACKSIZE 32768
+
+PROTMODE

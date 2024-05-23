@@ -1,0 +1,37 @@
+/***************************************************************************\
+ * NAME: TESTAPP.RC
+ *		
+ * DESCRIPTION:
+ *	 Test application dialog containing two sample control classes.
+\***************************************************************************/
+
+#define INCL_DOS
+#define INCL_WIN
+#define INCL_WORKPLACE
+#include <os2.h>
+#include "testapp.h"
+#include "clrsampl.h"
+
+DLGTEMPLATE SAMPLE_DIALOG LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Color Sample Control testcase", SAMPLE_DIALOG, 20, 51, 173, 78,
+            WS_VISIBLE, FCF_SYSMENU | FCF_TITLEBAR
+    BEGIN
+        GROUPBOX        "Color sample #2", DID_BOGUS,
+						5, 22, 110, 27
+        GROUPBOX        "Color sample #1", DID_BOGUS,
+						5, 49, 110, 27
+        PUSHBUTTON      "Edit color...", DID_EDIT1,
+						44, 55, 60, 12
+        CONTROL         "", DID_SAMPLE1,
+						16, 52, 20, 16,
+						COLOR_SAMPLE_CLASS, WS_VISIBLE
+        PUSHBUTTON      "Edit color...", DID_EDIT2,
+						44, 28, 60, 12
+        CONTROL         "", DID_SAMPLE2,
+						16, 25, 20, 16,
+						COLOR_SAMPLE_CLASS, WS_VISIBLE
+		PUSHBUTTON      "~OK", DID_OK,
+						6, 4, 40, 12
+    END
+END

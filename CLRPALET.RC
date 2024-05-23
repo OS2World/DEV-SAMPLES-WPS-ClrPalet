@@ -1,0 +1,49 @@
+/****************************************************************************\
+ * MODULE NAME: ClrPalet.CSC
+ *
+ * DESCRIPTION:
+ *   Resource definition file for ColorPalette object class.
+\****************************************************************************/
+#define INCL_PM
+#include <os2.h>
+#include "ClrPalet.ph"
+#include "pdsctls.h"
+
+/* ColorPalette object classes' icon - see wpclsQueryIconData method override
+ */
+POINTER ID_CLRPALET LOADONCALL MOVEABLE DISCARDABLE clrpalet.ico
+
+/* ColorPickingDialog dialog template definition
+ */
+DLGTEMPLATE IDDLG_COLORPICKINGDIALOG LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Edit Color", IDDLG_COLORPICKINGDIALOG, 10, 3, 209, 139, 0,
+            FCF_SYSMENU | FCF_TITLEBAR
+    BEGIN
+		CONTROL			"", DID_COLORWHEEL, 10, 30, 190, 100,
+							COLOR_WHEEL_CLASS,
+							WS_VISIBLE | WS_TABSTOP | CWS_RGB | CWS_AUTOSIZE | CWS_BITMAP | CWS_THREADED
+        PUSHBUTTON      "~Undo", DID_UNDO, 10, 8, 40, 12
+		CTEXT			"R", DID_BOGUS, 70, 8, 10, 12
+		CTEXT			"G", DID_BOGUS, 110, 8, 10, 12
+		CTEXT			"B", DID_BOGUS, 150, 8, 10, 12
+		CONTROL			"", DID_SPINR,
+						80, 8, 30, 8,
+						WC_SPINBUTTON,
+                        SPBS_READONLY | SPBS_MASTER |
+                        SPBS_FASTSPIN | SPBS_JUSTRIGHT | WS_GROUP |
+                        WS_TABSTOP | WS_VISIBLE
+		CONTROL			"", DID_SPING,
+						120, 8, 30, 8,
+						WC_SPINBUTTON,
+                        SPBS_READONLY | SPBS_MASTER |
+                        SPBS_FASTSPIN | SPBS_JUSTRIGHT | WS_GROUP |
+                        WS_TABSTOP | WS_VISIBLE
+		CONTROL			"", DID_SPINB,
+						160, 8, 30, 8,
+						WC_SPINBUTTON,
+                        SPBS_READONLY | SPBS_MASTER |
+                        SPBS_FASTSPIN | SPBS_JUSTRIGHT | WS_GROUP |
+                        WS_TABSTOP | WS_VISIBLE
+    END
+END

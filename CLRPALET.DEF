@@ -1,0 +1,17 @@
+LIBRARY ClrPalet INITINSTANCE
+DESCRIPTION 'Named Color Palette sample object class'
+PROTMODE
+DATA MULTIPLE NONSHARED LOADONCALL
+EXPORTS
+   ColorPaletteCClassData
+   ColorPaletteClassData
+   ColorPaletteNewClass
+   M_ColorPaletteCClassData
+   M_ColorPaletteClassData
+   M_ColorPaletteNewClass
+   StarColorPaletteCClassData
+   StarColorPaletteClassData
+   StarColorPaletteNewClass
+;  M_StarColorPaletteCClassData	(SOM didn't give us a metaclass)
+;  M_StarColorPaletteClassData	(SOM didn't give us a metaclass)
+;  M_StarColorPaletteNewClass	(SOM didn't give us a metaclass)

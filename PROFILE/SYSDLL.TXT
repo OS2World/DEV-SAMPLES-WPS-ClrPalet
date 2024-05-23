@@ -1,0 +1,34 @@
+
+
+ Registering A Public Class
+ --------------------------
+
+ To register a public window class for your control, you would add your DLL
+ to the "LoadOneTime" list.  Your DLL, in turn, would contain an ord1 function
+ that would perform the WinRegisterClass call which uses the CS_PUBLIC style.
+ Remember, CS_PUBLIC is only valid when used within the shell process.
+ Therefore, to make your control public, you will need to perform the
+ following steps:
+     1) Make a backup copy of your current OS2.INI file.
+     2) Add your DLL to the "LoadOneTime" list for SYS_DLLS in the OS2.INI
+        file.
+     3) Shutdown and reboot.
+
+ We have included a sample application, profile.c, that shows how to
+ add your DLL name to the SYS_DLLS "LoadOneTime" list.
+
+ Note:  If CS_PUBLIC is used by any process other than the shell process,
+        WinRegisterClass will fail.
+
+
+ Restrictions
+ ------------
+
+ The appname, SYS_DLLS, and the keynames, "Load", "LoadPerProcess", and
+ "LoadOneTime" are all case sensitive: you must be aware of the case
+ sensitivity as shown in the sample application.  Additionally, there is
+ a 255 character limit per each keyname string.  Finally, if you have
+ modified the string for the "LoadOneTime" keyname, you must reboot
+ for your change to take effect.
+
+
