@@ -2,6 +2,13 @@
 
 Version 1.1
 
+![ColorPalette ScreenShot](/wiki/ColorPalette.png)
+
+LICENSE
+========
+BSD 3 Clause
+
+
 Modernized build of IBM's **Named Color Palette** Workplace Shell sample
 (DEV-SAMPLES-WPS-ClrPalet, 1992/1993): the two SOM 1.0 `.SC` precompiler
 classes were converted to **modern SOM IDL**, the tree was reorganized, and
