@@ -1,8 +1,9 @@
-# ClrPalet-Watcom
-
-Version 1.1
+# ClrPalet
+IBM's Named Color Palette Workplace Shell sample
 
 ![ColorPalette ScreenShot](/doc/ColorPalette.png)
+
+Version 1.1
 
 Modernized build of IBM's **Named Color Palette** Workplace Shell sample
 (DEV-SAMPLES-WPS-ClrPalet, 1992/1993): the two SOM 1.0 `.SC` precompiler
