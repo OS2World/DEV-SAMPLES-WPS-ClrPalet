@@ -1,0 +1,32 @@
+Running shell command:
+	somcpp -D__OS2__  -IC:\os2tk45\h -IC:\os2tk45\idl -I. -IC:\os2tk45\som\include -D__SOMIDL_VERSION_1__  -D__SOMIDL__  -Iidl -C  idl/clrpalet.idl > C:\var\temp\0f400000.CTN
+somipc -mppfile=C:\var\temp\0f400000.CTN    -v  -e emitih -e emith -e emitctm -e emitc  -o h\idl/clrpalet idl/clrpalet.idl
+Loading  emitih.
+"ColorPalette" "M_ColorPalette" 
+Unloading  emitih.
+Loading  emith.
+"ColorPalette" "M_ColorPalette" 
+Unloading  emith.
+Loading  emitctm.
+"ColorPalette" "M_ColorPalette" 
+Unloading  emitctm.
+Loading  emitc.
+"ColorPalette" "M_ColorPalette" 
+Unloading  emitc.
+Removed "C:\var\temp\0f400000.CTN".
+Running shell command:
+	somcpp -D__OS2__  -IC:\os2tk45\h -IC:\os2tk45\idl -I. -IC:\os2tk45\som\include -D__SOMIDL_VERSION_1__  -D__SOMIDL__  -Iidl -C  idl/clrstar.idl > C:\var\temp\0fa00000.CTN
+somipc -mppfile=C:\var\temp\0fa00000.CTN    -v  -e emitih -e emith -e emitctm -e emitc  -o h\idl/clrstar idl/clrstar.idl
+Loading  emitih.
+"StarColorPalette" 
+Unloading  emitih.
+Loading  emith.
+"StarColorPalette" 
+Unloading  emith.
+Loading  emitctm.
+"StarColorPalette" 
+Unloading  emitctm.
+Loading  emitc.
+"StarColorPalette" 
+Unloading  emitc.
+Removed "C:\var\temp\0fa00000.CTN".

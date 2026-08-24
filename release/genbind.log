@@ -1,0 +1,36 @@
+=== genbind start  23 Aug 2026 22:37:06  ===
+cwd       :  D:\SWtest\ClrPalet-Watcom
+sc        :  C:\OS2TK45\SOM\BIN\SC.EXE
+SMINCLUDE : (from environment)  C:\os2tk45\h;C:\os2tk45\idl;.;C:\os2tk45\som\include;
+shell     : sh.exe (stdout+stderr captured)
+sc rc     [clrpalet]:  0
+shell     : sh.exe (stdout+stderr captured)
+sc rc     [clrstar]:  0
+RESULT    : OK - all bindings written to h\.
+=== genbind start  23 Aug 2026 22:41:48  ===
+cwd       :  D:\SWtest\ClrPalet-Watcom
+sc        :  C:\OS2TK45\SOM\BIN\SC.EXE
+SMINCLUDE : (from environment)  C:\os2tk45\h;C:\os2tk45\idl;.;C:\os2tk45\som\include;
+shell     : sh.exe (stdout+stderr captured)
+sc rc     [clrpalet]:  0
+shell     : sh.exe (stdout+stderr captured)
+sc rc     [clrstar]:  0
+RESULT    : OK - all bindings written to h\.
+=== genbind start  23 Aug 2026 22:54:48  ===
+cwd       :  D:\SWtest\ClrPalet-Watcom
+sc        :  C:\OS2TK45\SOM\BIN\SC.EXE
+SMINCLUDE : (from environment)  C:\os2tk45\h;C:\os2tk45\idl;.;C:\os2tk45\som\include;
+shell     : sh.exe (stdout+stderr captured)
+sc rc     [clrpalet]:  0
+shell     : sh.exe (stdout+stderr captured)
+sc rc     [clrstar]:  0
+RESULT    : OK - all bindings written to h\.
+=== genbind start  23 Aug 2026 23:00:47  ===
+cwd       :  D:\SWtest\ClrPalet-Watcom
+sc        :  C:\OS2TK45\SOM\BIN\SC.EXE
+SMINCLUDE : (from environment)  C:\os2tk45\h;C:\os2tk45\idl;.;C:\os2tk45\som\include;
+shell     : sh.exe (stdout+stderr captured)
+sc rc     [clrpalet]:  0
+shell     : sh.exe (stdout+stderr captured)
+sc rc     [clrstar]:  0
+RESULT    : OK - all bindings written to h\.

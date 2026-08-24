@@ -1,0 +1,44 @@
+/*
+ * clrstar.idl - StarColorPalette interface definition.
+ *
+ * Converted from the SOM 1.0 precompiler format (CLRSTAR.SC, produced by
+ * 'spc' 1.22 / 'emitcsc' 1.10) to SOM IDL for the modern SOM compiler (sc).
+ *
+ * Original class:
+ *   IBM Corporation, 1992/1993 - Named Color Palette WPS sample.
+ *   StarColorPalette = minimal illustration of a palette subclass: it only
+ *   overrides QuerySampleShape so each color swatch is drawn as a star
+ *   instead of a rectangle.
+ *
+ * Conversion notes (full story in README.md):
+ *   - 'class:'/'parent:' syntax -> 'interface X : Parent'
+ *   - 'override QuerySampleShape;' -> 'QuerySampleShape: override;'
+ *     inside the implementation block
+ *   - no metaclass overrides exist (as in the original, whose DEF noted
+ *     'SOM didn't give us a metaclass'); modern sc nevertheless emits
+ *     M_StarColorPalette bindings for the implicit metaclass - they are
+ *     exported for completeness.
+ *   - C.ih passthru content (SOM_NoTest/_RETAIL defines, PM prelude) moved
+ *     to the top of src\clrstar.c
+ */
+
+#include <clrpalet.idl>
+
+interface StarColorPalette : ColorPalette
+{
+#ifdef __SOMIDL__
+    implementation
+    {
+        /* no new instance methods -> no releaseorder needed */
+        externalprefix = clrs_;
+        majorversion   = 1;
+        minorversion   = 2;
+        filestem       = clrstar;
+        callstyle      = oidl;
+        dllname        = "clrpalet.dll";
+
+        /* was: override QuerySampleShape; */
+        QuerySampleShape: override;
+    };
+#endif
+};

@@ -1,0 +1,99 @@
+/*
+ * clrpalet.idl - ColorPalette interface definition.
+ *
+ * Converted from the SOM 1.0 precompiler format (CLRPALET.SC, produced by
+ * 'spc' 1.22 / 'emitcsc' 1.10) to SOM IDL for the modern SOM compiler (sc).
+ *
+ * Original class:
+ *   IBM Corporation, 1992/1993 - Named Color Palette WPS sample.
+ *   ColorPalette = a WPColorPalette subclass: a palette of named colors
+ *   that can be dragged and dropped like the system color palette, with a
+ *   custom color-editing dialog backed by the ColorWheel control that this
+ *   DLL also registers.  Can replace the system WPColorPalette class via
+ *   WinReplaceObjectClass.
+ *
+ * Conversion notes (full story in README.md):
+ *   - 'class:'/'parent:' syntax        -> 'interface X : Parent'
+ *   - 'data:' section                  -> instance variables inside the
+ *                                         implementation block
+ *   - 'override x, class;'             -> metaclass interface M_ColorPalette
+ *                                         with its own override list
+ *   - overrides use the SOM IDL 'methodname: override;' statement form
+ *   - wpSelectCell is now overridden NORMALLY: Toolkit 4.5 declares it as a
+ *     public released method of WPPalette (wppalet.idl:47-48) and
+ *     WPColorPalette already overrides it (wpclrpal.idl:59).  The 1993 code
+ *     had to install the override at runtime (_somOverrideSMethod) and call
+ *     the parent through _somFindMethod because the method was then
+ *     undocumented; both hacks are gone.
+ *   - C.ph passthru IDs -> h\clrpids.h (sc does not emit .ph)
+ *   - C.ih passthru content (globals, COLORPICKDATA, forward decls) moved
+ *     to the top of src\clrpalet.c
+ */
+
+#include <wpclrpal.idl>
+
+interface M_ColorPalette;               /* forward: metaclass declared below */
+
+interface ColorPalette : WPColorPalette
+{
+    /* New methods (release order) */
+    BOOL    SetEditDlgHandle(in HWND hwndEditDlg);
+
+    HWND    QueryEditDlgHandle();
+
+    BOOL    QuerySampleShape(in PPOINTL pPoints,
+                             in PULONG pcPoints);
+    /* NOTE: 'in', not 'inout': the original CSC passed the array pointer
+     * directly (caller-owned buffer, contents filled out when non-NULL).
+     * 'inout' would make sc emit 'PPOINTL*' - an extra indirection level
+     * that neither the original callers nor StarColorPalette expect. */
+
+#ifdef __SOMIDL__
+    implementation
+    {
+        releaseorder:
+            SetEditDlgHandle,
+            QueryEditDlgHandle,
+            QuerySampleShape;
+
+        externalprefix = clrp_;
+        majorversion   = 1;
+        minorversion   = 2;
+        filestem       = clrpalet;
+        metaclass      = M_ColorPalette;
+        callstyle      = oidl;
+        dllname        = "clrpalet.dll";
+
+        /* Instance data (was the CSC 'data:' section) */
+        HWND    hwndEditDlg;        /* editing dialog handle            */
+        HWND    hwndColorSample;    /* sample control talking to us     */
+        PCELL   pSelectedCell;      /* currently selected cell          */
+
+        /* was: override wpPaintCell; etc. */
+        wpPaintCell:      override;
+        wpEditCell:       override;
+        wpRedrawCell:     override;
+        wpSetup:          override;
+        wpSelectCell:     override;
+    };
+#endif
+};
+
+interface M_ColorPalette : M_WPColorPalette  /* metaclass */
+{
+#ifdef __SOMIDL__
+    implementation
+    {
+        externalprefix = clrpM_;
+        functionprefix = clrpM_;
+        filestem       = clrpalet;      /* must be same as above            */
+        callstyle      = oidl;
+        dllname        = "clrpalet.dll";
+
+        /* was: override wpclsInitData, class; etc. */
+        wpclsInitData:     override;
+        wpclsQueryIconData: override;
+        wpclsQueryStyle:   override;
+    };
+#endif
+};

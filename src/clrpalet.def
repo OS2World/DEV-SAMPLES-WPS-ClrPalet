@@ -1,0 +1,21 @@
+LIBRARY ClrPalet INITINSTANCE
+DESCRIPTION 'Named Color Palette sample object class'
+PROTMODE
+DATA MULTIPLE NONSHARED LOADONCALL
+EXPORTS
+   ColorPaletteCClassData
+   ColorPaletteClassData
+   ColorPaletteNewClass
+   M_ColorPaletteCClassData
+   M_ColorPaletteClassData
+   M_ColorPaletteNewClass
+   StarColorPaletteCClassData
+   StarColorPaletteClassData
+   StarColorPaletteNewClass
+;  M_StarColorPalette* are NOT emitted by the modern SOM compiler either -
+;  clrstar.idl declares no metaclass, exactly as the original noted:
+;  "SOM didn't give us a metaclass".
+   SOMInitModule
+
+; Parent-class symbols consumed from wpconfig.dll at load time are
+; declared as IMPORTS by Makefile.wat (WPSIMP), so they are not listed here.

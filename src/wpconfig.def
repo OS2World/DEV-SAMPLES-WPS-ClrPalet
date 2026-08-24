@@ -1,0 +1,15 @@
+; wpconfig.def - import declarations for the Workplace Shell classes that
+; the sc-generated class-construction code references from our parent
+; chain.  Per the toolkit IDLs, WPPalette and WPColorPalette (and their
+; metaclasses) ship in wpconfig.dll:
+;   wppalet.idl:86   dllname = "wpconfig.dll";
+;   wpclrpal.idl:34  dllname = "wpconfig.dll";
+;
+; Used host-side/VM-side by IMPLIB to produce release\wpconfig.lib
+; (see Makefile.wat).  Only symbols actually imported are listed.
+
+LIBRARY WPCONFIG
+EXPORTS
+   M_WPColorPaletteNewClass
+   WPColorPaletteNewClass
+   WPPaletteClassData
