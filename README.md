@@ -2,7 +2,7 @@
 
 Version 1.1
 
-![ColorPalette ScreenShot](/wiki/ColorPalette.png)
+![ColorPalette ScreenShot](/doc/ColorPalette.png)
 
 LICENSE
 ========
