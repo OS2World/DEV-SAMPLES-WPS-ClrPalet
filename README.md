@@ -155,7 +155,6 @@ they are preserved as `release\sc_*_template.c` for reference instead).
                 clrpalet.def                       DLL exports
                 clrpalet.ico                       class icon
                 wpconfig.def                       imports from wpconfig.dll
-    orig\       pristine copy of DEV-SAMPLES-WPS-ClrPalet
     release\    build output (+ genbind.log, sc_raw.log, sc templates)
 
 Host path: `C:\Temporal\1.- OS2\SWtest\ClrPalet-Watcom`
