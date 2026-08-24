@@ -4,17 +4,16 @@ Version 1.1
 
 ![ColorPalette ScreenShot](/doc/ColorPalette.png)
 
-LICENSE
-========
-BSD 3 Clause
-
-
 Modernized build of IBM's **Named Color Palette** Workplace Shell sample
 (DEV-SAMPLES-WPS-ClrPalet, 1992/1993): the two SOM 1.0 `.SC` precompiler
 classes were converted to **modern SOM IDL**, the tree was reorganized, and
 the whole project now builds with **Open Watcom** on OS/2 2.x+ (ArcaOS).
 Same treatment as `MBFolder-Watcom`; read that project's README first for
 toolchain background.
+
+LICENSE
+========
+BSD 3 Clause
 
 ## What it is
 
