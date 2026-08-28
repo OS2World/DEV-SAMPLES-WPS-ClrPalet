@@ -105,9 +105,12 @@ they are preserved as `release\sc_*_template.c` for reference instead).
 - **Parent-class imports**: the sc-generated class-construction code
   references `WPColorPaletteNewClass`, `M_WPColorPaletteNewClass` and
   `WPPaletteClassData`, which live in **wpconfig.dll** (wppalet.idl:86,
-  wpclrpal.idl:34).  somtk.lib only covers SOM.DLL itself, so the makefile
-  runs IMPLIB over `src\wpconfig.def` to produce `release\wpconfig.lib` and
-  links it alongside somtk.lib.
+  wpclrpal.idl:34).  `wlib -n -b -q release\wpconfig.lib +C:\OS2\DLL\wpconfig.dll`
+  reads the DLL export table directly to produce the import library.
+  `src\wpconfig.def` documents the three symbols consumed but is not fed to
+  `wlib` (wlib rejects EXPORTS `.def` files).  `release\som.lib` is built
+  the same way from `C:\OS2\DLL\som.dll`, avoiding the transitive
+  `somc`/`some`/`somtc` dependencies that `somtk.lib` drags in.
 
 ### Resources
 
@@ -133,7 +136,16 @@ they are preserved as `release\sc_*_template.c` for reference instead).
 - **Makefile.wat**: two targets - `release\clrpalet.dll` (clrpalet + clrstar
   + clrwheel objects, `-bd`, resources attached with wrc) and
   `release\testapp.exe` (testapp + clrsampl, plain PM program, no SOM).
-  IMPLIB step builds the wpconfig import library automatically.
+  `wlib -n -b -q` builds both `som.lib` and `wpconfig.lib` from the live
+  system DLLs.  `src\clrpalet.def` provides the BLDLEVEL `OPTION DESCRIPTION`
+  string to wlink via `@$(CLRPALETDEF)` in LFLAGS.
+- **wlib** replaces `implib` for import library generation. Both `som.lib`
+  and `wpconfig.lib` are built by `wlib -n -b -q` reading the live system
+  DLLs directly (wlib rejects EXPORTS `.def` files).
+- **BLDLEVEL string** embedded in `clrpalet.dll` via `OPTION DESCRIPTION`
+  in `src\clrpalet.def` (readable by `bldlevel clrpalet.dll`).
+- **`mk.cmd`** added: REXX build wrapper that runs `wmake clean` then a
+  full build, capturing all output to `release\wmake.log`.
 - **register.cmd / deregister.cmd** mirror the original INSTALL.CMD /
   UNINSTAL.CMD (same OBJECTIDs `<PALETFLDR>`, `<CLRPALET>`, `<STARCLRPALET>`),
   but register against the built DLL's full path so no LIBPATH edit is
@@ -153,13 +165,25 @@ they are preserved as `release\sc_*_template.c` for reference instead).
                 clrsampl.c                         color sample control (EXE)
                 testapp.c/.h/.rc/.def              PM test app
                 clrpalet.rc                        icon + picking dialog template
-                clrpalet.def                       DLL exports
+                clrpalet.def                       wlink directives (BLDLEVEL OPTION DESCRIPTION)
                 clrpalet.ico                       class icon
-                wpconfig.def                       imports from wpconfig.dll
+                wpconfig.def                       reference: symbols from wpconfig.dll (not fed to wlib)
     release\    build output (+ genbind.log, sc_raw.log, sc templates)
 
-Host path: `C:\Temporal\1.- OS2\SWtest\ClrPalet-Watcom`
-= VM path: `D:\SWtest\ClrPalet-Watcom`.
+Host path: `C:\Temporal\1.- OS2\SWtest\DEV-SAMPLES-WPS-ClrPalet`
+= VM path: `D:\SWtest\DEV-SAMPLES-WPS-ClrPalet`.
+
+## Prerequisites
+
+- **ArcaOS** or **OS/2 Warp 3+** with the Workplace Shell.
+- **Open Watcom v2** (wcc386, wlink, wrc, wlib, wmake) on the build machine.
+  `WATCOM` environment variable must be set.
+- **SOM toolkit headers** at `C:\os2tk45\som\include` (adjust `SOMINC`).
+- **OS/2 / WPS toolkit headers** at `C:\os2tk45\h` (adjust `WPSINC`).
+- **SOM compiler** `SC.EXE` from the toolkit (not Watcom's SC) -- needed
+  once to generate bindings. `genbind.cmd` locates it automatically.
+- **`som.dll`** and **`wpconfig.dll`** at `C:\OS2\DLL\` (standard on ArcaOS/OS/2);
+  both are read by `wlib` at build time to produce the import libraries.
 
 ## Building
 
@@ -175,10 +199,30 @@ On the ArcaOS Dev VM (Open Watcom + toolkit at `C:\os2tk45`):
 
 2. **Compile and link**
 
-       wmake -f Makefile.wat 2>&1 | tee compile.log
+       mk
 
-   Produces `release\clrpalet.dll` and `release\testapp.exe`.
-   Path overrides: `wmake -f Makefile.wat SOMINC=... WPSINC=... SOMLIB=...`.
+   `mk.cmd` runs `wmake -f Makefile.wat clean` then a full build,
+   capturing all output to `release\wmake.log`.  Produces
+   `release\clrpalet.dll` and `release\testapp.exe`.
+   Path overrides: `wmake -f Makefile.wat SOMINC=... WPSINC=...`.
+
+### Build sequence
+
+1. **Compilation** -- `wcc386 -bd` compiles `clrpalet.c`, `clrstar.c`,
+   `clrwheel.c` (DLL objects) and `testapp.c`, `clrsampl.c` (EXE objects).
+2. **Import libraries** -- `wlib -n -b -q` builds both from the live DLLs:
+   - `release\som.lib` from `C:\OS2\DLL\som.dll` (avoids `somtk.lib`'s
+     transitive somc/some/somtc dependencies).
+   - `release\wpconfig.lib` from `C:\OS2\DLL\wpconfig.dll` (WPColorPalette
+     and WPPalette parent classes).
+   `src\wpconfig.def` documents the three symbols consumed but is not fed
+   to `wlib` (wlib rejects EXPORTS `.def` files; it reads DLL export tables
+   directly).
+3. **Link** -- `wlink SYSTEM OS2V2_DLL` produces `release\clrpalet.dll` with
+   `OPTION DESCRIPTION` (BLDLEVEL string) from `src\clrpalet.def`.
+4. **Resources** -- `wrc` compiles `src\clrpalet.rc` and binds it into the DLL.
+5. **Test application** -- `wlink SYSTEM OS2V2_PM` produces
+   `release\testapp.exe` (plain PM program, no SOM linkage).
 
 3. **Register and test**
 
@@ -243,8 +287,9 @@ LX image check of `clrpalet.dll` (tools/lx_export.py):
 | wrc E060 Can't find file "...ico" | Resource-file paths resolve against wrc's working directory; reference them relative to the makefile cwd (`src\clrpalet.ico`). |
 | W1177 "Modifier repeated" at sombtype.h(41) | Known Watcom-vs-IBM-header quirk, expected; already suppressed via `-wcd=1177` (see Verification results). If you see it, your build used old flags. |
 | Linker E2028 `M_StarColorPalette*` undefined | Those symbols don't exist - sc emits no bindings for classes without explicit metaclasses. Remove them from exports. |
-| Linker E2028 `WPColorPaletteNewClass` / `WPPaletteClassData` / `M_WPColorPaletteNewClass` | Parent classes ship in wpconfig.dll; keep them listed in `src\wpconfig.def` (IMPLIB step supplies the import library). |
-| Linker E3033 directive error near a symbol name | wlink rejected inline `IMPORT` directives; use the IMPLIB route instead. |
+| Linker E2028 `WPColorPaletteNewClass` / `WPPaletteClassData` / `M_WPColorPaletteNewClass` | Parent classes ship in wpconfig.dll; ensure `release\wpconfig.lib` exists (built from `C:\OS2\DLL\wpconfig.dll` by wlib). |
+| Linker E3033 directive error near `';'` | `src\clrpalet.def` contains a comment (`;`). wlink's directive parser rejects `;`. The file must contain ONLY the `OPTION DESCRIPTION` line. |
+| `Error code: 2. Module information: SOMC` on register | `somtk.lib` is being used instead of `release\som.lib`. Run `mk` (cleans first) to rebuild with the live `som.dll` import library. |
 | Linker E2028 `_CRT_init` | IBMC-only symbol; don't define a custom `_DLL_InitTerm` under Watcom - let its default DLL init run (see release notes). |
 | Registration succeeds but objects don't appear / WPS hangs on load | Stale class registration pointing at an older DLL path - run `deregister`, restart the WPS, rebuild, `register` again. Crashes land in `C:\POPUPLOG.OS2`. |
 

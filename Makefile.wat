@@ -22,9 +22,15 @@
 #      be overwritten by sc's emitted templates.
 #   3. SOMINC points at a directory containing som.h, somobj.h, ...;
 #      WPSINC at one containing os2.h, pmwin.h, wpobject.h, ...
-#   4. SOMLIB: import library for SOM.DLL - shipped with the toolkit.
-#      Parent WPS classes come from wpconfig.dll; src\wpconfig.def +
-#      IMPLIB produce release\wpconfig.lib for those (see README.md).
+#   4. Import libraries built by wlib from the live system DLLs:
+#        wlib -n -b -q release\som.lib     +C:\OS2\DLL\som.dll
+#        wlib -n -b -q release\wpconfig.lib +C:\OS2\DLL\wpconfig.dll
+#      src\wpconfig.def documents the three symbols consumed from wpconfig.dll
+#      but is not fed to wlib (wlib rejects EXPORTS .def files; it reads DLL
+#      export tables directly).  Using the live DLL instead of somtk.lib also
+#      avoids the transitive somc/some/somtc dependencies.
+#   5. src\clrpalet.def contains the wlink OPTION DESCRIPTION (BLDLEVEL
+#      string) referenced from LFLAGS via @$(CLRPALETDEF).
 #****************************************************************************
 
 WATCOM  = $(%WATCOM)
@@ -37,18 +43,22 @@ WATCOM  = $(%WATCOM)
 SOMINC  = C:\os2tk45\som\include
 # WPSINC : os2.h, pmwin.h, wpobject.h, wpfsys.idl headers, ...
 WPSINC  = C:\os2tk45\h
-# import library for SOM.DLL - shipped with the toolkit
-SOMLIB  = C:\os2tk45\som\lib\somtk.lib
+# import library for SOM.DLL - built from the live DLL via wlib (avoids
+# somtk.lib's transitive somc/some/somtc dependencies).
+SOMDLL       = C:\OS2\DLL\som.dll
+SOMLIB       = $(OUT)\som.lib
 # ---------------------------------------------------------------------------
 
 HDIR    = h
 SRC     = src
 OUT     = release
+WPSCONFIGDLL = C:\OS2\DLL\wpconfig.dll
+CLRPALETDEF  = $(SRC)\clrpalet.def
 
 CC      = wcc386
 LINK    = wlink
 RC      = wrc
-IMPLIB  = implib
+WLIB    = wlib
 
 # Calling-convention note: SOMLINK stays EMPTY under Watcom (somltype.h has
 # no __WATCOMC__ case) - do not -d-define it (E1100 macro conflict).  Linkage
@@ -79,14 +89,15 @@ EXPS    = EXP ColorPaletteClassData EXP ColorPaletteCClassData &
           EXP SOMInitModule
 
 # Parent-class symbols referenced by the sc-generated class-construction
-# code all live in wpconfig.dll (wppalet.idl:86, wpclrpal.idl:34);
-# somtk.lib only covers SOM.DLL itself.  An import library is generated
-# from src\wpconfig.def (see the WPSLIB rule below).
-WPSDEF  = $(SRC)\wpconfig.def
+# code all live in wpconfig.dll (wppalet.idl:86, wpclrpal.idl:34).
+# release\wpconfig.lib is built from $(WPSCONFIGDLL) by wlib.
+# src\wpconfig.def documents the three symbols consumed but is reference-only
+# (wlib rejects EXPORTS .def files; it reads DLL export tables directly).
 WPSLIB  = $(OUT)\wpconfig.lib
 
 LFLAGS  = SYSTEM OS2V2_DLL NAME $(OUT)\clrpalet.dll &
           OP MAP=$(OUT)\clrpalet.map &
+          @$(CLRPALETDEF) &
           LIBF $(SOMLIB),$(WPSLIB) $(EXPS)
 
 # Test application - plain PM program, no SOM linkage at all.
@@ -115,10 +126,13 @@ $(OUT)\clrpalet.res : $(SRC)\clrpalet.rc $(HDIR)\clrpids.h $(HDIR)\pdsctls.h &
     copy $(SRC)\clrpalet.res $(OUT)
     del $(SRC)\clrpalet.res
 
-$(OUT)\wpconfig.lib : $(WPSDEF)
-    $(IMPLIB) $@ $?
+$(OUT)\wpconfig.lib : $(WPSCONFIGDLL)
+    $(WLIB) -n -b -q $@ +$(WPSCONFIGDLL)
 
-$(OUT)\clrpalet.dll : $(DLLOBJ) $(OUT)\clrpalet.res $(SRC)\clrpalet.def $(WPSLIB)
+$(OUT)\som.lib : $(SOMDLL)
+    $(WLIB) -n -b -q $@ +$(SOMDLL)
+
+$(OUT)\clrpalet.dll : $(DLLOBJ) $(OUT)\clrpalet.res $(CLRPALETDEF) $(SOMLIB) $(WPSLIB)
     $(LINK) $(LFLAGS) FIL $(OUT)\clrpalet.obj,$(OUT)\clrstar.obj,$(OUT)\clrwheel.obj
     $(RC) $(OUT)\clrpalet.res $(OUT)\clrpalet.dll
 # No MAPSYM step: IBM mapsym rejects Watcom's map format ("Unexpected eof"),
@@ -141,6 +155,7 @@ bindings : .SYMBOLIC
 clean : .SYMBOLIC
     -del $(OUT)\*.obj
     -del $(OUT)\*.res
+    -del $(OUT)\*.lib
     -del $(OUT)\*.dll
     -del $(OUT)\*.exe
     -del $(OUT)\*.map
